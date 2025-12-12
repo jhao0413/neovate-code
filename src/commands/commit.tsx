@@ -51,14 +51,24 @@ type CommitState =
       data: GenerateCommitData;
       outputLines?: string[];
     }
-  | { phase: 'success'; message: string; outputLines?: string[] }
+  | {
+      phase: 'success';
+      message: string;
+      data: GenerateCommitData;
+      outputLines?: string[];
+    }
   | {
       phase: 'completed';
       data: GenerateCommitData;
       result: ExecutionResult;
       outputLines?: string[];
     }
-  | { phase: 'error'; error: string; recoveryAction?: () => void };
+  | {
+      phase: 'error';
+      error: string;
+      data?: GenerateCommitData;
+      recoveryAction?: () => void;
+    };
 
 interface CommitUIProps {
   messageBus: MessageBus;
@@ -161,6 +171,7 @@ const CommitUI: React.FC<CommitUIProps> = ({ messageBus, cwd, options }) => {
           setState({
             phase: 'error',
             error: branchResult.error || 'Failed to create branch',
+            data,
           });
           return;
         }
@@ -190,9 +201,10 @@ const CommitUI: React.FC<CommitUIProps> = ({ messageBus, cwd, options }) => {
             setState({
               phase: 'error',
               error: `${error}\n\nHint: Use --no-verify (-n) to skip pre-commit hooks.`,
+              data,
             });
           } else {
-            setState({ phase: 'error', error });
+            setState({ phase: 'error', error, data });
           }
           return;
         }
@@ -218,14 +230,16 @@ const CommitUI: React.FC<CommitUIProps> = ({ messageBus, cwd, options }) => {
               setState({
                 phase: 'error',
                 error: `${error}\n\nHint: Run 'git pull' first to sync with remote.`,
+                data,
               });
             } else if (error.includes('Authentication')) {
               setState({
                 phase: 'error',
                 error: `${error}\n\nHint: Check your credentials or setup SSH keys.`,
+                data,
               });
             } else {
-              setState({ phase: 'error', error });
+              setState({ phase: 'error', error, data });
             }
             return;
           }
@@ -404,6 +418,7 @@ const CommitUI: React.FC<CommitUIProps> = ({ messageBus, cwd, options }) => {
           setState({
             phase: 'success',
             message: 'Commit message copied to clipboard!',
+            data,
           });
           setTimeout(() => setShouldExit(true), 1000);
           break;
@@ -426,6 +441,7 @@ const CommitUI: React.FC<CommitUIProps> = ({ messageBus, cwd, options }) => {
             setState((prev) => ({
               phase: 'success',
               message: 'Changes committed successfully!',
+              data,
               outputLines: prev.phase === 'executing' ? prev.outputLines : [],
             }));
             setTimeout(() => setShouldExit(true), 1000);
@@ -438,6 +454,7 @@ const CommitUI: React.FC<CommitUIProps> = ({ messageBus, cwd, options }) => {
               setState({
                 phase: 'error',
                 error: `${error}\n\nHint: Use --no-verify (-n) to skip pre-commit hooks.`,
+                data,
                 recoveryAction: async () => {
                   setState({
                     phase: 'executing',
@@ -455,6 +472,7 @@ const CommitUI: React.FC<CommitUIProps> = ({ messageBus, cwd, options }) => {
                       phase: 'success',
                       message:
                         'Changes committed successfully (hooks skipped)!',
+                      data,
                       outputLines:
                         prev.phase === 'executing' ? prev.outputLines : [],
                     }));
@@ -463,12 +481,13 @@ const CommitUI: React.FC<CommitUIProps> = ({ messageBus, cwd, options }) => {
                     setState({
                       phase: 'error',
                       error: retryResult.error || 'Commit failed',
+                      data,
                     });
                   }
                 },
               });
             } else {
-              setState({ phase: 'error', error });
+              setState({ phase: 'error', error, data });
             }
           }
           break;
@@ -492,6 +511,7 @@ const CommitUI: React.FC<CommitUIProps> = ({ messageBus, cwd, options }) => {
             setState({
               phase: 'error',
               error: commitResult.error || 'Commit failed',
+              data,
             });
             return;
           }
@@ -513,6 +533,7 @@ const CommitUI: React.FC<CommitUIProps> = ({ messageBus, cwd, options }) => {
             setState((prev) => ({
               phase: 'success',
               message: 'Changes committed and pushed successfully!',
+              data,
               outputLines: prev.phase === 'executing' ? prev.outputLines : [],
             }));
             setTimeout(() => setShouldExit(true), 1000);
@@ -522,9 +543,10 @@ const CommitUI: React.FC<CommitUIProps> = ({ messageBus, cwd, options }) => {
               setState({
                 phase: 'error',
                 error: `${error}\n\nHint: Run 'git pull' first to sync with remote.`,
+                data,
               });
             } else {
-              setState({ phase: 'error', error });
+              setState({ phase: 'error', error, data });
             }
           }
           break;
@@ -547,6 +569,7 @@ const CommitUI: React.FC<CommitUIProps> = ({ messageBus, cwd, options }) => {
             setState({
               phase: 'error',
               error: branchResult.error || 'Failed to create branch',
+              data,
             });
             return;
           }
@@ -564,6 +587,7 @@ const CommitUI: React.FC<CommitUIProps> = ({ messageBus, cwd, options }) => {
             setState((prev) => ({
               phase: 'success',
               message: `Branch '${branchName}' created and changes committed!`,
+              data,
               outputLines: prev.phase === 'executing' ? prev.outputLines : [],
             }));
             setTimeout(() => setShouldExit(true), 1000);
@@ -571,6 +595,7 @@ const CommitUI: React.FC<CommitUIProps> = ({ messageBus, cwd, options }) => {
             setState({
               phase: 'error',
               error: commitResult.error || 'Commit failed',
+              data,
             });
           }
           break;
@@ -763,7 +788,10 @@ const CommitUI: React.FC<CommitUIProps> = ({ messageBus, cwd, options }) => {
       {/* Success Phase */}
       {state.phase === 'success' && (
         <Box flexDirection="column">
-          <Text color="green">✅ {state.message}</Text>
+          <CommitResultCard {...state.data} />
+          <Box marginTop={1}>
+            <Text color="green">✅ {state.message}</Text>
+          </Box>
           {state.outputLines && state.outputLines.length > 0 && (
             <Box flexDirection="column" marginTop={1} paddingLeft={2}>
               {state.outputLines.map((line, idx) => (
@@ -831,11 +859,14 @@ const CommitUI: React.FC<CommitUIProps> = ({ messageBus, cwd, options }) => {
 
       {/* Error Phase */}
       {state.phase === 'error' && (
-        <ErrorDisplay
-          error={state.error}
-          recoveryAction={state.recoveryAction}
-          onExit={() => setShouldExit(true)}
-        />
+        <Box flexDirection="column">
+          {state.data && <CommitResultCard {...state.data} />}
+          <ErrorDisplay
+            error={state.error}
+            recoveryAction={state.recoveryAction}
+            onExit={() => setShouldExit(true)}
+          />
+        </Box>
       )}
     </Box>
   );
