@@ -17,6 +17,7 @@ import { createGrepTool } from './tools/grep';
 import { createLSTool } from './tools/ls';
 import { createReadTool } from './tools/read';
 import { createSkillTool } from './tools/skill';
+import { createTaskTool } from './tools/task';
 import { createTodoTool, type TodoItem } from './tools/todo';
 import { createWriteTool } from './tools/write';
 
@@ -26,6 +27,8 @@ type ResolveToolsOpts = {
   write?: boolean;
   todo?: boolean;
   askUserQuestion?: boolean;
+  signal?: AbortSignal;
+  task?: boolean;
 };
 
 export async function resolveTools(opts: ResolveToolsOpts) {
@@ -77,6 +80,7 @@ export async function resolveTools(opts: ResolveToolsOpts) {
         }),
       ]
     : [];
+
   const mcpTools = await getMcpTools(opts.context);
 
   const allTools = [
@@ -89,15 +93,34 @@ export async function resolveTools(opts: ResolveToolsOpts) {
   ];
 
   const toolsConfig = opts.context.config.tools;
-  if (!toolsConfig || Object.keys(toolsConfig).length === 0) {
-    return allTools;
-  }
+  const availableTools = (() => {
+    if (!toolsConfig || Object.keys(toolsConfig).length === 0) {
+      return allTools;
+    }
+    return allTools.filter((tool) => {
+      // Check if the tool is disabled (only explicitly set to false will disable)
+      const isDisabled = toolsConfig[tool.name] === false;
+      return !isDisabled;
+    });
+  })();
 
-  return allTools.filter((tool) => {
-    // Check if the tool is disabled (only explicitly set to false will disable)
-    const isDisabled = toolsConfig[tool.name] === false;
-    return !isDisabled;
-  });
+  const taskTools = (() => {
+    // Task tool is only available in quiet mode
+    if (!opts.task) return [];
+    if (!opts.context.agentManager) return [];
+    const tool = createTaskTool({
+      context: opts.context,
+      tools: availableTools,
+      sessionId: opts.sessionId,
+      signal: opts.signal,
+    });
+    if (toolsConfig && toolsConfig[tool.name] === false) {
+      return [];
+    }
+    return [tool];
+  })();
+
+  return [...availableTools, ...taskTools];
 }
 
 async function getMcpTools(context: Context): Promise<Tool[]> {
@@ -171,7 +194,7 @@ export class Tools {
         : 0;
       const desc =
         limit > 0 && tool.description.length > limit
-          ? tool.description.slice(0, limit - 3) + '...'
+          ? `${tool.description.slice(0, limit - 3)}...`
           : tool.description;
       return {
         type: 'function',
@@ -283,6 +306,11 @@ export type ToolResult = {
   llmContent: string | (TextPart | ImagePart)[];
   returnDisplay?: ReturnDisplay;
   isError?: boolean;
+  metadata?: {
+    agentId?: string;
+    agentType?: string;
+    [key: string]: any;
+  };
 };
 
 export function createTool<TSchema extends z.ZodTypeAny>(config: {
