@@ -81,3 +81,9 @@ $ pnpm release
 $ pnpm release:minor
 $ pnpm release:major
 ```
+
+Since npm has updated it's security policy, you need to run `npm login` before and run `npm publish` after the release temporarily. Later we will update the release script to do this automatically or use github actions to publish the package.
+
+```bash
+$ npm login && pnpm release && npm publish
+```
