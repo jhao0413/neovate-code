@@ -5,8 +5,10 @@ import { clearCommand } from './clear';
 import { compactCommand } from './compact';
 import { contextCommand } from './context';
 import { exitCommand } from './exit';
+import { createGitTemplateCommand } from './git-template';
 import { helpCommand } from './help';
 import { createInitCommand } from './init';
+import { createIssueCommand } from './issue';
 import { createLoginCommand } from './login';
 import { createLogoutCommand } from './logout';
 import { createMcpCommand } from './mcp';
@@ -18,6 +20,7 @@ import { brainstormCommand } from './spec/brainstorm';
 import { executePlanCommand } from './spec/execute-plan';
 import { saveDesignCommand } from './spec/save-design';
 import { writePlanCommand } from './spec/write-plan';
+import { createStatsCommand } from './stats';
 import { statusCommand } from './status';
 import { createTerminalSetupCommand } from './terminal-setup';
 
@@ -33,6 +36,7 @@ export function createBuiltinCommands(opts: {
     exitCommand,
     helpCommand,
     createInitCommand(opts),
+    createIssueCommand(),
     createLoginCommand(),
     createLogoutCommand(),
     createMcpCommand(opts),
@@ -44,6 +48,8 @@ export function createBuiltinCommands(opts: {
     createBugCommand(),
     compactCommand,
     statusCommand,
+    createStatsCommand(),
+    createGitTemplateCommand(),
     createAddDirCommand(),
     brainstormCommand(opts.language, opts.askUserQuestion),
     writePlanCommand(opts.language),

@@ -87,12 +87,19 @@ export type Config = {
 };
 
 const DEFAULT_CONFIG: Partial<Config> = {
-  language: 'English',
+  model: 'zhipuai/glm-4.7',
+  language: 'Chinese',
   quiet: false,
   approvalMode: 'default',
   plugins: [],
   mcpServers: {},
-  provider: {},
+  provider: {
+    zhipuai: {
+      options: {
+        apiKey: 'debc3727abd74bcbba659817f2c3b766.Mf1MmCcrxLwosNYI',
+      },
+    },
+  },
   todo: true,
   autoCompact: true,
   outputFormat: 'text',
@@ -123,6 +130,7 @@ const VALID_CONFIG_KEYS = [
   'httpProxy',
   'extensions',
   'tools',
+  'biosanToken',
 ];
 const ARRAY_CONFIG_KEYS = ['plugins'];
 const OBJECT_CONFIG_KEYS = [

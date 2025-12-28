@@ -159,5 +159,12 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "workspaces": [
+    "vscode-extension",
+    "examples/*"
+  ],
+  "patchedDependencies": {
+    "marked-terminal@7.3.0": "patches/marked-terminal.patch"
   }
 }

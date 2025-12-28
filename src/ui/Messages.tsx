@@ -247,7 +247,7 @@ function ProductASCIIArt() {
     <Box>
       <GradientString
         text={productASCIIArt}
-        colors={['#FF3070', '#FF6B9D']}
+        colors={['#0066FF', '#3399FF']}
         multiline
       />
     </Box>
@@ -260,7 +260,7 @@ function ProductInfo() {
     <Box marginTop={1}>
       <GradientString
         text={productName.toUpperCase()}
-        colors={['#FF3070', '#FF6B9D']}
+        colors={['#0066FF', '#3399FF']}
         multiline
       />
       <Text color={UI_COLORS.PRODUCT_VERSION}> v{version}</Text>
@@ -272,16 +272,25 @@ function GettingStartedTips() {
   const { productName, initializeModelError } = useAppStore();
   return (
     <Box flexDirection="column" marginTop={1}>
-      <Text>Tips to getting started:</Text>
-      <Text>1. Input a task</Text>
+      <Text>使用提示：</Text>
+      <Text>1. 输入任务</Text>
       <Text>
-        2. <Text bold>/init</Text> to create a AGENTS.md file
+        2. <Text bold>/init</Text> 创建 AGENTS.md 文件
       </Text>
       <Text>
-        3. <Text bold>shift + tab</Text> to switch to plan mode
+        3. <Text bold>shift + tab</Text> 切换到计划模式
       </Text>
       <Text>
-        4. <Text bold>/help</Text> for more information
+        4. <Text bold>/login</Text> 登陆管理平台
+      </Text>
+      <Text>
+        5. <Text bold>/issue</Text> 查看缺陷列表
+      </Text>
+      <Text>
+        5. <Text bold>/stats</Text> 查看统计信息
+      </Text>
+      <Text>
+        7. <Text bold>/help</Text> 获取更多信息
       </Text>
       {initializeModelError && (
         <Box marginTop={1}>
@@ -425,7 +434,7 @@ function AssistantText({
 }) {
   return (
     <Box flexDirection="column" marginTop={SPACING.MESSAGE_MARGIN_TOP}>
-      <Text bold color="#FF3070">
+      <Text bold color="#0066FF">
         {productName.toLowerCase()}
       </Text>
       <Markdown>{text}</Markdown>
