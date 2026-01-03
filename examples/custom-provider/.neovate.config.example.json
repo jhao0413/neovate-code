@@ -1,0 +1,93 @@
+{
+  "$schema": "../config.schema.json",
+  "extensions": {
+    "customProviders": {
+      "my-openai-compatible": {
+        "name": "My OpenAI Compatible Provider",
+        "api": "https://api.my-provider.com/v1",
+        "doc": "https://docs.my-provider.com",
+        "env": ["MY_PROVIDER_API_KEY"],
+        "apiEnv": ["MY_PROVIDER_API_BASE"],
+        "headers": {
+          "X-Custom-Header": "my-value"
+        },
+        "models": {
+          "gpt-4o-compatible": "gpt-4o",
+          "gpt-4.1-compatible": "gpt-4.1",
+          "claude-3.5-compatible": "claude-3-5-sonnet-20241022"
+        },
+        "aliases": {
+          "gpt4": "gpt-4o-compatible",
+          "gpt41": "gpt-4.1-compatible",
+          "claude": "claude-3.5-compatible"
+        },
+        "options": {
+          "httpProxy": "http://localhost:8080"
+        }
+      },
+      "anthropic-compatible": {
+        "name": "Anthropic Compatible",
+        "api": "https://api.anthropic-compatible.com/v1",
+        "doc": "https://docs.anthropic-compatible.com",
+        "env": ["ANTHROPIC_COMPATIBLE_API_KEY"],
+        "models": {
+          "claude-v1": "claude-3-5-sonnet-20241022"
+        },
+        "aliases": {
+          "claude-v1": "claude-v1"
+        }
+      },
+      "custom-model-provider": {
+        "name": "Custom Model Provider",
+        "api": "https://api.custom-model.com/v1",
+        "doc": "https://docs.custom-model.com",
+        "env": ["CUSTOM_MODEL_API_KEY"],
+        "models": {
+          "custom-large": {
+            "name": "Custom Large Model",
+            "shortName": "Custom L",
+            "attachment": true,
+            "reasoning": true,
+            "temperature": true,
+            "tool_call": true,
+            "knowledge": "2025-01",
+            "release_date": "2025-01-01",
+            "last_updated": "2025-01-01",
+            "modalities": {
+              "input": ["text", "image"],
+              "output": ["text"]
+            },
+            "open_weights": false,
+            "limit": {
+              "context": 128000,
+              "output": 4096
+            }
+          },
+          "custom-small": "gpt-4o"
+        },
+        "aliases": {
+          "large": "custom-large",
+          "small": "custom-small"
+        }
+      }
+    }
+  },
+  "provider": {
+    "my-openai-compatible": {
+      "options": {
+        "apiKey": "your-api-key-here",
+        "baseURL": "https://api.my-provider.com/v1"
+      }
+    },
+    "anthropic-compatible": {
+      "options": {
+        "apiKey": "your-api-key-here"
+      }
+    },
+    "custom-model-provider": {
+      "options": {
+        "apiKey": "your-api-key-here"
+      }
+    }
+  }
+}

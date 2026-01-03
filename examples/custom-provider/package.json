@@ -1,0 +1,16 @@
+{
+  "name": "neovate-custom-provider-example",
+  "version": "1.0.0",
+  "description": "Example of creating custom provider plugins for Neovate Code",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "tsx index.ts"
+  },
+  "dependencies": {
+    "@neovate/code": "*"
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0"
+  }
+}

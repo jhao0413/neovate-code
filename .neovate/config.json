@@ -1,1 +1,46 @@
-{}
+{
+  "mcpServers": {
+    "browsermcp": {
+      "command": "npx",
+      "args": ["@browsermcp/mcp@latest"]
+    }
+  },
+  "extensions": {
+    "customProviders": {
+      "my-provider": {
+        "name": "My Provider",
+        "api": "https://api.ikuncode.cc",
+        "env": ["MY_API_KEY"],
+        "models": {
+          "claude-opus-4-5-20251101": {
+            "name": "Claude Opus 4.5",
+            "shortName": "Opus 4.5",
+            "attachment": true,
+            "reasoning": true,
+            "temperature": true,
+            "tool_call": true,
+            "knowledge": "2024-11",
+            "release_date": "2024-11-01",
+            "last_updated": "2025-11-01",
+            "modalities": {
+              "input": ["text", "image"],
+              "output": ["text"]
+            },
+            "open_weights": false,
+            "limit": {
+              "context": 200000,
+              "output": 64000
+            }
+          }
+        }
+      }
+    }
+  },
+  "provider": {
+    "my-provider": {
+      "options": {
+        "apiKey": "sk-SRaHPWgM7dTk6jgwBjKihQHTYuXiv1u2xr3fjUYYREwIlgzu"
+      }
+    }
+  }
+}
