@@ -589,6 +589,7 @@ function Thinking({ text }: { text: string }) {
 }
 
 function ToolResultItem({ part }: { part: ToolResultPart }) {
+  const { transcriptMode } = useAppStore();
   const { result, input } = part;
   if (result.isError) {
     let text = result.returnDisplay || result.llmContent;
@@ -619,6 +620,7 @@ function ToolResultItem({ part }: { part: ToolResultPart }) {
             originalContent={originalContentValue}
             newContent={newContentValue}
             fileName={filePath}
+            maxHeight={transcriptMode ? Infinity : 10}
           />
         );
       }

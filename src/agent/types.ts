@@ -1,6 +1,11 @@
 import type { Context } from '../context';
 import type { NormalizedMessage } from '../message';
-import type { Tool } from '../tool';
+import type {
+  ApprovalCategory,
+  Tool,
+  ToolApprovalResult,
+  ToolUse,
+} from '../tool';
 
 export interface AgentDefinition {
   agentType: string;
@@ -12,6 +17,7 @@ export interface AgentDefinition {
   disallowedTools?: string[];
   forkContext?: boolean;
   color?: string;
+  path?: string;
 }
 
 export interface TaskToolInput {
@@ -48,6 +54,10 @@ export interface AgentExecuteOptions {
     message: NormalizedMessage,
     agentId: string,
   ) => void | Promise<void>;
+  onToolApprove?: (opts: {
+    toolUse: ToolUse;
+    category?: ApprovalCategory;
+  }) => Promise<boolean | ToolApprovalResult>;
 }
 
 /**
@@ -85,4 +95,9 @@ export enum AgentSource {
   Project = 'project',
   GlobalClaude = 'global-claude',
   Global = 'global',
+}
+
+export interface AgentLoadError {
+  path: string;
+  message: string;
 }
