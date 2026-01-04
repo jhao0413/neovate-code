@@ -1,3 +1,10 @@
+## 0.22.7
+
+`2026-01-04`
+
+- refactor: consolidate AI response sanitization utilities by @chencheng (云谦) in [#610](https://github.com/umijs/takumi/pull/610)
+
+
 ## 0.22.6
 
 `2026-01-04`
