@@ -1374,6 +1374,7 @@ export const providers: ProvidersMap = {
       'claude-opus-4-5': models['claude-opus-4-5'],
     },
     createModelType: 'anthropic',
+    createModel: defaultAnthropicModelCreator,
   },
   aihubmix: {
     id: 'aihubmix',
@@ -1880,6 +1881,59 @@ export const providers: ProvidersMap = {
         account,
       })(name);
     },
+  },
+  nvidia: {
+    id: 'nvidia',
+    env: ['NVIDIA_API_KEY'],
+    name: 'NVIDIA',
+    api: 'https://integrate.api.nvidia.com/v1/',
+    doc: 'https://nvidia.com/',
+    models: {
+      'z-ai/glm4.7': models['glm-4.7'],
+      'minimaxai/minimax-m2.1': models['minimax-m2.1'],
+      'moonshotai/kimi-k2-thinking': models['kimi-k2-thinking'],
+      'openai/gpt-oss-120b': models['gpt-oss-120b'],
+      'qwen/qwen3-coder-480b-a35b-instruct':
+        models['qwen3-coder-480b-a35b-instruct'],
+    },
+    createModel: createModelCreatorCompatible({
+      middlewares: [
+        extractReasoningMiddleware({
+          tagName: 'think',
+        }),
+      ],
+    }),
+  },
+  canopywave: {
+    id: 'canopywave',
+    env: ['CANOPYWAVE_API_KEY'],
+    name: 'CanopyWave',
+    api: 'https://inference.canopywave.io/v1',
+    doc: 'https://canopywave.io/',
+    models: {
+      'minimax/minimax-m2.1': models['minimax-m2.1'],
+      'zai/glm-4.7': models['glm-4.7'],
+      'moonshotai/kimi-k2-thinking': models['kimi-k2-thinking'],
+      'deepseek/deepseek-chat-v3.2': models['deepseek-v3-2-exp'],
+    },
+    createModel: defaultModelCreator,
+  },
+  modelwatch: {
+    id: 'modelwatch',
+    env: ['MODELWATCH_API_KEY'],
+    name: 'ModelWatch',
+    api: 'http://api.modelwatch.dev/antigravity/v1/',
+    doc: 'https://api.modelwatch.dev/',
+    models: {
+      'gemini-2.5-flash': models['gemini-2.5-flash'],
+      'gemini-3-flash-preview': models['gemini-3-flash-preview'],
+      'gemini-3-pro-preview': models['gemini-3-pro-preview'],
+      'claude-4-5-sonnet': models['claude-4-5-sonnet'],
+      'claude-haiku-4-5': models['claude-haiku-4-5'],
+      'claude-opus-4-5': models['claude-opus-4-5'],
+    },
+    createModelType: 'anthropic',
+    createModel: defaultAnthropicModelCreator,
   },
 };
 
